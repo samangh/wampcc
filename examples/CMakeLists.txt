@@ -12,7 +12,7 @@ macro(Compile_Example example source_path)
   add_executable(${example} "${PROJECT_SOURCE_DIR}/examples/${source_path}/${example}.cc")
   target_link_libraries (${example}	PRIVATE ${EXTRA_LIBS})
 
-  if (WIN32)
+  if (MSVC)
     set_target_properties(${example} PROPERTIES LINK_FLAGS "/NODEFAULTLIB:libcmt.lib /NODEFAULTLIB:libcmtd.lib")
   endif()
 endmacro()
