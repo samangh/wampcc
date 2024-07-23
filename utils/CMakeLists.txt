@@ -1,14 +1,11 @@
 if(BUILD_SHARED_LIBS)
-  set(EXTRA_LIBS ${EXTRA_LIBS} wampcc_shared wampcc_json_shared)
+  set(EXTRA_LIBS ${EXTRA_LIBS} wampcc_shared wampcc_json_shared Threads::Threads)
 else()
-  set(EXTRA_LIBS ${EXTRA_LIBS} wampcc_static wampcc_json_static)
+  set(EXTRA_LIBS ${EXTRA_LIBS} wampcc_static wampcc_json_static Threads::Threads)
 endif()
 
-# Needed because std::condition_variable::wait_for() on libstdc++
+# Threads needed because std::condition_variable::wait_for() on libstdc++
 # uses pthreads.
-if(CMAKE_HOST_UNIX)
-  set(EXTRA_LIBS ${EXTRA_LIBS} Threads::Threads)
-endif()
 
 if(BUILD_UTILS)
 

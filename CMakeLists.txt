@@ -95,9 +95,7 @@ set(HAVE_JANSSON ON)
 ## Find Threads on Linux systems, for compiling EXAMPLES or UTILS
 ##
 
-if(CMAKE_HOST_UNIX)
-  find_package(Threads REQUIRED)
-endif()
+find_package(Threads REQUIRED)
 
 message(STATUS "OpenSSL_INCLUDE_DIR:      " ${OPENSSL_INCLUDE_DIR})
 message(STATUS "OpenSSL_LIBRARIES:        " ${OPENSSL_LIBRARIES})
