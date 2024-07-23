@@ -51,6 +51,7 @@ if(BUILD_STATIC_LIBS)
   add_dependencies(wampcc_static wampcc_json_static)
 
   list(APPEND TO_INSTALL wampcc_static)
+  set_property(GLOBAL APPEND PROPERTY ${PROJECT_NAME}_TARGETS wampcc_static)
 endif()
 
 ##
@@ -84,6 +85,7 @@ if(BUILD_SHARED_LIBS)
   add_dependencies(wampcc_shared wampcc_json_shared)
 
   list(APPEND TO_INSTALL wampcc_shared)
+  set_property(GLOBAL APPEND PROPERTY ${PROJECT_NAME}_TARGETS wampcc_shared)
 endif()
 
 ##

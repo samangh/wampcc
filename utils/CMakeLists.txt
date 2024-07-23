@@ -20,4 +20,5 @@ if(BUILD_UTILS)
   ##
   install (TARGETS admin DESTINATION "${INSTALL_BIN_DIR}" COMPONENT util)
 
+  set_property(GLOBAL APPEND PROPERTY ${PROJECT_NAME}_TARGETS admin)
 endif() # BUILD_UTILS

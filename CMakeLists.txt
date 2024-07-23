@@ -163,7 +163,8 @@ install(FILES ${PROJECT_BINARY_DIR}/wampcc_json.pc DESTINATION "${INSTALL_PKGCON
 #
 
 if (USE_STATIC_RUNTIME AND MSVC)
-  foreach(t ${TO_INSTALL})
+  get_property(TARGETS GLOBAL PROPERTY ${PROJECT_NAME}_TARGETS)
+  foreach(t ${TARGETS})
     set_property(TARGET ${t} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
   endforeach()
 endif()

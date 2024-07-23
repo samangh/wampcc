@@ -23,6 +23,7 @@ if(BUILD_STATIC_LIBS)
 	  LibUV::LibUV)
 
   list(APPEND TO_INSTALL wampcc_json_static)
+  set_property(GLOBAL APPEND PROPERTY ${PROJECT_NAME}_TARGETS wampcc_json_static)
 endif()
 
 ##
@@ -49,7 +50,7 @@ if(BUILD_SHARED_LIBS)
 	  LibUV::LibUV)
 
   list(APPEND TO_INSTALL wampcc_json_shared)
-
+  set_property(GLOBAL APPEND PROPERTY ${PROJECT_NAME}_TARGETS wampcc_json_shared)
 endif()
 
 ##
