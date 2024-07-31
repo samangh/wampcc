@@ -41,7 +41,7 @@ if (MSVC)
 endif()
 
 set(LibUV_DIR   "" CACHE STRING "libuv installation directory")
-set(JANSSON_DIR "" CACHE STRING "Jansson installation directory")
+set(jansson_DIR "" CACHE STRING "Jansson installation directory")
 
 include(GNUInstallDirs)
 set(INSTALL_BIN_DIR "${CMAKE_INSTALL_BINDIR}" CACHE PATH "Installation directory for executables")
@@ -101,9 +101,9 @@ message(STATUS "OpenSSL_INCLUDE_DIR:      " ${OPENSSL_INCLUDE_DIR})
 message(STATUS "OpenSSL_LIBRARIES:        " ${OPENSSL_LIBRARIES})
 message(STATUS "LibUV_INCLUDE_DIRS:       " ${LibUV_INCLUDE_DIRS})
 message(STATUS "LibUV_LIBRARIES:          " ${LibUV_LIBRARIES})
-message(STATUS "JANSSON_INCLUDE_DIR:      " ${JANSSON_INCLUDE_DIR})
-message(STATUS "JANSSON_LIBRARY:          " ${JANSSON_LIBRARY})
-message(STATUS "JANSSON_VERSION:          " ${JANSSON_VERSION})
+message(STATUS "jansson_INCLUDE_DIR:      " ${jansson_INCLUDE_DIR})
+message(STATUS "jansson_LIBRARY:          " ${jansson_LIBRARY})
+message(STATUS "jansson_VERSION:          " ${jansson_VERSION})
 
 # configure a header file to pass some of the CMake settings
 # to the source code
@@ -202,3 +202,9 @@ install(EXPORT wampccExportTargets
         COMPONENT dev)
 
 include(cmake/MakeDebPackages.cmake)
+
+# get_cmake_property(_variableNames VARIABLES)
+# list (SORT _variableNames)
+# foreach (_variableName ${_variableNames})
+#     message(STATUS "${_variableName}=${${_variableName}}")
+# endforeach()
