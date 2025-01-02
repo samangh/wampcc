@@ -9,7 +9,16 @@ endif()
 
 if(BUILD_UTILS)
 
-  add_executable(admin "${PROJECT_SOURCE_DIR}/utils/admin.cc")
+  if (MSVC)
+    add_executable(admin
+      "${PROJECT_SOURCE_DIR}/utils/admin.cc"
+      "${PROJECT_SOURCE_DIR}/utils/getopt.c")
+    target_include_directories(admin
+      PRIVATE "${PROJECT_SOURCE_DIR}/utils")
+  else()
+    add_executable(admin "${PROJECT_SOURCE_DIR}/utils/admin.cc")
+  endif()
+
   target_link_libraries (admin ${EXTRA_LIBS})
 
   ##
