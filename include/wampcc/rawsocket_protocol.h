@@ -9,6 +9,7 @@
 #define WAMPCC_RAWSOCKET_PROTOCOL_H
 
 #include "wampcc/protocol.h"
+#include <chrono>
 
 namespace wampcc {
 
