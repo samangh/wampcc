@@ -9,6 +9,7 @@
 #include "wampcc/utils.h"
 #include "wampcc/protocol.h"
 
+#include <atomic>
 #include <sstream>
 #include <condition_variable>
 #include <mutex>
@@ -94,10 +95,15 @@ struct t_callback
 };
 
 
+/* Set when a request fails, so that the process can exit with a non-zero
+ * status. */
+std::atomic<bool> g_request_error{false};
+
 void rpc_call_cb(wampcc::result_info r)
 {
   if (r.was_error)
   {
+    g_request_error = true;
     std::cout << "error: " << r.error_uri << ", list:"
               << r.args.args_list << ", dict:" << r.args.args_dict
               << std::endl;
@@ -529,6 +535,7 @@ int main_impl(int argc, char** argv)
 
   bool long_wait = false;
   bool wait_reply = false;
+  bool closed = false;
 
   // subscribe to user topics
   wampcc::json_object sub_options { {KEY_PATCH, 1} };
@@ -537,8 +544,10 @@ int main_impl(int argc, char** argv)
     ws->subscribe(
       topic, sub_options,
       [topic](wampcc::wamp_session&, wampcc::subscribed_info info){
-        if (info.was_error)
+        if (info.was_error) {
+          g_request_error = true;
           std::cout << "subscribe failed for '"<< topic << "' : " << info.error_uri << std::endl;
+        }
         else
           std::cout << "subscribe successful for '"<< topic << "', subscription_id : " << info.subscription_id << std::endl;
       },
@@ -558,6 +567,7 @@ int main_impl(int argc, char** argv)
                               << std::endl;
                   }
                   else {
+                    g_request_error = true;
                     std::cout << "publish failed to topic '"<<uopts.publish_topic
                               <<"' with error " << info.error_uri
                               << std::endl;
@@ -575,8 +585,10 @@ int main_impl(int argc, char** argv)
     ws->provide(uopts.register_procedure,
                 wampcc::json_object(),
                 [](wampcc::wamp_session&, wampcc::registered_info info){
-                  if (!info)
+                  if (!info) {
+                    g_request_error = true;
                     std::cout << "register failed" << std::endl;
+                  }
                   else
                     std::cout << "register success, with registration_id "
                               << info.registration_id << std::endl;
@@ -599,7 +611,7 @@ int main_impl(int argc, char** argv)
     wait_reply = true;
   }
 
-  while ((long_wait || wait_reply) && ws->is_open())
+  while ((long_wait || wait_reply) && !closed)
   {
     std::unique_lock< std::mutex > guard( event_queue_mutex );
 
@@ -616,9 +628,15 @@ int main_impl(int argc, char** argv)
         case eNone : break;
         case eRPCSent : break;  /* resets the timer */
         case eReplyReceived : wait_reply = false; break;
-        case eClosed: break;
+        case eClosed: closed = true; break;
       }
     }
+  }
+
+  if (wait_reply)
+  {
+    g_request_error = true;
+    std::cout << "session closed before reply received" << std::endl;
   }
 
   /* Commence orderly shutdown of the wamp_session.  Shutdown is an asychronous
@@ -635,7 +653,7 @@ int main_impl(int argc, char** argv)
      destruction) */
   g_kernel.reset();
 
-  return 0;
+  return g_request_error ? 1 : 0;
 }
 
 
